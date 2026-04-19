@@ -1,0 +1,23 @@
+# Veri Toplama (Web Scraping)
+requests
+beautifulsoup4
+
+# Veri İşleme ve Analiz
+pandas
+numpy
+
+# Görselleştirme (EDA)
+matplotlib
+seaborn
+
+# Makine Öğrenmesi (Regression)
+scikit-learn
+
+# Jupyter Notebook desteği
+ipykernel
+
+jinja2
+
+# LLM Entegrasyonu (Gemini API)
+google-genai
+python-dotenv

@@ -244,7 +244,7 @@ def compute_competition_index(df):
 def compute_distributor_features(df):
     """
     Dağıtıcı bazlı iki istatistiksel özellik hesaplar.
-    Her ikisi de hedef değişkeni (log_total_audience) KULLANMAZ → leakage yok.
+    Her ikisi de hedef değişkeni (log_total_audience) KULLANMAZ → hedef leakage yok.
 
     distributor_film_count
         Bu dağıtıcının veri setindeki toplam film sayısı.
@@ -254,6 +254,14 @@ def compute_distributor_features(df):
         Bu dağıtıcının filmlerinin yüzde kaçı yerli (is_domestic == 1)?
         0.0 → tamamen yabancı içerik,  1.0 → tamamen yerli içerik.
         CGV Mars/yerli odaklı ile UIP/yabancı odaklı dağıtıcıları ayırt eder.
+
+    *** TEMPORAL LEAKAGE UYARISI ***
+        Bu fonksiyon istatistikleri TÜM veri seti üzerinde hesaplar.
+        Örneğin 2015'teki bir film, 2022–2025 filmlerini de içeren
+        bir dağıtıcı sayısını "görür" — bu temporal leakage'dir.
+        Doğru kullanım: model_training notebook'unda train/test split'ten
+        SONRA bu istatistikler yalnızca train seti üzerinden yeniden
+        hesaplanır ve test setine map edilir (bkz. Section 2, adım 3).
 
     Not: distributor_power (ortalama) ve distributor_std (std) hedef tabanlıdır;
          data leakage riski nedeniyle train/test split'ten SONRA notebook'ta hesaplanır.

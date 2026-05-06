@@ -90,7 +90,7 @@ Return a JSON array with exactly {len(films)} objects, one per movie, in the sam
     "director_has_hit": <0 or 1 — director had a prior box office hit>,
     "star_power": <0-3 — lead cast popularity in Turkish market>,
     "budget_tier": <0-4 — budget: 0=micro(<$1M), 1=low($1-10M), 2=medium($10-50M), 3=high($50-150M), 4=blockbuster(>$150M)>,
-    "is_franchise": <0 or 1 — part of MCU/DC/major franchise>,
+    "is_franchise": <0 or 1 — part of any film series or franchise, including Turkish series such as Recep İvedik, Düğün Dernek, Organize İşler>,
     "is_adaptation": <0 or 1 — adapted from book/game/IP>,
     "has_awards": <0 or 1 — major award win or nomination>
   }},

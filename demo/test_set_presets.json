@@ -1,0 +1,136 @@
+[
+  {
+    "emoji": "🎬",
+    "name": "Soyut Dışavurumcu Bir Dostluğun Anatomisi Veyahut Ya",
+    "desc": "Test seti 2025 · Gerçek gişe: 2.946.886 seyirci",
+    "f": {
+      "is_domestic": 1,
+      "genres": [
+        "Dram",
+        "IMAX",
+        "Komedi"
+      ],
+      "runtime_minutes": 148.0,
+      "imdb_puani": 7.5,
+      "imdb_yok": 0,
+      "release_year": 2025,
+      "release_month": 11,
+      "competition_index": 1,
+      "is_sequel": 0,
+      "yonetmen_skor": 11.658341952566236,
+      "yonetmen_film_sayisi": 2.0,
+      "oyuncu1_skor": 10.761035528467923,
+      "oyuncu2_skor": 11.557597816242378,
+      "oyuncu3_skor": 10.514639779315903,
+      "kadro_veri_var": 1.0,
+      "dagitimci_skor": 11.78492516753322
+    },
+    "actual_toplam_seyirci": 2946886
+  },
+  {
+    "emoji": "🎬",
+    "name": "Zavallılar",
+    "desc": "Test seti 2024 · Gerçek gişe: 213.715 seyirci",
+    "f": {
+      "is_domestic": 0,
+      "genres": [
+        "Bilim-Kurgu",
+        "Romantik"
+      ],
+      "runtime_minutes": 143.0,
+      "imdb_puani": 7.7,
+      "imdb_yok": 0,
+      "release_year": 2024,
+      "release_month": 2,
+      "competition_index": 2,
+      "is_sequel": 0,
+      "yonetmen_skor": 10.716593438796496,
+      "yonetmen_film_sayisi": 2.0,
+      "oyuncu1_skor": 10.985957419642148,
+      "oyuncu2_skor": 11.124573204704802,
+      "oyuncu3_skor": 10.483013063227611,
+      "kadro_veri_var": 1.0,
+      "dagitimci_skor": 11.9340458661406
+    },
+    "actual_toplam_seyirci": 213715
+  },
+  {
+    "emoji": "🎬",
+    "name": "Kadıköy Boğası",
+    "desc": "Test seti 2025 · Gerçek gişe: 68.570 seyirci",
+    "f": {
+      "is_domestic": 1,
+      "genres": [
+        "Komedi"
+      ],
+      "runtime_minutes": 83.0,
+      "imdb_puani": 1.0,
+      "imdb_yok": 0,
+      "release_year": 2025,
+      "release_month": 8,
+      "competition_index": 1,
+      "is_sequel": 0,
+      "yonetmen_skor": 10.768727050188277,
+      "yonetmen_film_sayisi": 0.0,
+      "oyuncu1_skor": 10.768727050188277,
+      "oyuncu2_skor": 11.507022368560206,
+      "oyuncu3_skor": 10.768727050188277,
+      "kadro_veri_var": 1.0,
+      "dagitimci_skor": 10.860723008208096
+    },
+    "actual_toplam_seyirci": 68570
+  },
+  {
+    "emoji": "🎬",
+    "name": "Öğretmenler Odası",
+    "desc": "Test seti 2024 · Gerçek gişe: 31.538 seyirci",
+    "f": {
+      "is_domestic": 0,
+      "genres": [
+        "Dram"
+      ],
+      "runtime_minutes": 98.0,
+      "imdb_puani": 7.4,
+      "imdb_yok": 0,
+      "release_year": 2024,
+      "release_month": 2,
+      "competition_index": 4,
+      "is_sequel": 0,
+      "yonetmen_skor": 9.98762863348025,
+      "yonetmen_film_sayisi": 1.0,
+      "oyuncu1_skor": 10.797647119159816,
+      "oyuncu2_skor": 10.797647119159816,
+      "oyuncu3_skor": 10.797647119159816,
+      "kadro_veri_var": 1.0,
+      "dagitimci_skor": 10.117474471095305
+    },
+    "actual_toplam_seyirci": 31538
+  },
+  {
+    "emoji": "🎬",
+    "name": "Son Bir Nefes",
+    "desc": "Test seti 2025 · Gerçek gişe: 6.010 seyirci",
+    "f": {
+      "is_domestic": 0,
+      "genres": [
+        "Dram",
+        "Gerilim"
+      ],
+      "runtime_minutes": 93.0,
+      "imdb_puani": 6.6,
+      "imdb_yok": 0,
+      "release_year": 2025,
+      "release_month": 2,
+      "competition_index": 2,
+      "is_sequel": 0,
+      "yonetmen_skor": 10.782288364293755,
+      "yonetmen_film_sayisi": 0.0,
+      "oyuncu1_skor": 10.99697153062422,
+      "oyuncu2_skor": 10.782288364293755,
+      "oyuncu3_skor": 11.048595468437114,
+      "kadro_veri_var": 1.0,
+      "dagitimci_skor": 10.844996780598464
+    },
+    "actual_toplam_seyirci": 6010
+  }
+]

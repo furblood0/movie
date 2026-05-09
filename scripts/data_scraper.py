@@ -6,6 +6,19 @@ import time
 import os
 
 def scrape_box_office():
+    # LIMITATION — Selection Bias (Top-100 per year)
+    # This scraper collects only the highest-audience 100 films per year.
+    # The resulting dataset represents Turkey's most popular films, NOT the
+    # full theatrical market.  Low-audience releases (arthouse, independent,
+    # limited-run) are excluded.
+    #
+    # Practical consequences:
+    #   • R² scores are likely inflated compared to a full-market dataset because
+    #     the hardest-to-predict low-count films are absent.
+    #   • The trained models should NOT be used to forecast arthouse or
+    #     independent films; they are calibrated only for mainstream releases.
+    #
+    # This limitation is acknowledged in the project report (Section 6.4).
     all_movies = []
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'

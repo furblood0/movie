@@ -1,0 +1,8 @@
+{
+  "model_name": "GradientBoostingRegressor (V5 — notebook)",
+  "metric1_label": "Test R² (temporal, ≥2023)",
+  "metric1_value": "0.4125",
+  "metric2_label": "Test MedAPE",
+  "metric2_value": "70.42%",
+  "training_note": "Eğitim: Liste_Yili ≤2022 (1376 film) | Test: ≥2023 (600) | Hedef: log1p(seyirci)"
+}

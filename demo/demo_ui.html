@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Türkiye Box-Office — Seyirci Tahmin</title>
+<style>
+  :root {
+    --bg:       #08090f;
+    --bg2:      #0d0f1a;
+    --card:     #111321;
+    --card2:    #161929;
+    --border:   rgba(99,102,241,0.13);
+    --border2:  rgba(99,102,241,0.28);
+    --accent:   #6366f1;
+    --accent2:  #a78bfa;
+    --accent3:  #818cf8;
+    --green:    #10b981;
+    --red:      #f43f5e;
+    --orange:   #f59e0b;
+    --text:     #e2e8f0;
+    --muted:    #64748b;
+    --muted2:   #94a3b8;
+    --input:    #0c0e1a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 15% 0%, rgba(99,102,241,0.07) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 100%, rgba(167,139,250,0.05) 0%, transparent 55%);
+  }
+
+  /* ── Header ── */
+  header {
+    background: rgba(13,15,26,0.97);
+    border-bottom: 1px solid var(--border2);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .header-left h1 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+  }
+  .header-left h1 .hl {
+    background: linear-gradient(90deg, var(--accent3), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header-left .subtitle {
+    font-size: 0.73rem;
+    color: var(--muted);
+    margin-top: 3px;
+    font-weight: 400;
+  }
+
+  /* status badge */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(16,185,129,0.07);
+    border: 1px solid rgba(16,185,129,0.22);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 0.77rem;
+    color: var(--green);
+    font-weight: 600;
+    transition: all .4s;
+  }
+  .badge.off {
+    background: rgba(244,63,94,0.07);
+    border-color: rgba(244,63,94,0.22);
+    color: var(--red);
+  }
+  .badge .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: blink 2s infinite;
+  }
+  .badge.off .dot { animation: none; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+  /* ── Metrics bar ── */
+  .metrics-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 10px 32px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+  }
+  .metric {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 0.77rem;
+    color: var(--muted2);
+    transition: border-color .25s;
+  }
+  .metric:hover { border-color: var(--border2); }
+  .metric .mi { font-size: 0.88rem; }
+  .metric strong { color: var(--accent2); font-weight: 700; }
+
+  /* ── Presets ── */
+  .presets-section {
+    padding: 18px 32px 0;
+    max-width: 1340px;
+    margin: 0 auto;
+  }
+  .section-eyebrow {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    margin-bottom: 10px;
+  }
+  .presets-row {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+  }
+  .preset-card {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 15px;
+    cursor: pointer;
+    transition: all .2s;
+    color: var(--text);
+    font-family: inherit;
+    text-align: left;
+  }
+  .preset-card:hover {
+    border-color: var(--accent);
+    background: rgba(99,102,241,0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(99,102,241,0.15);
+  }
+  .preset-card.active {
+    border-color: var(--accent2);
+    background: rgba(99,102,241,0.12);
+    box-shadow: 0 0 0 2px rgba(99,102,241,0.15);
+  }
+  .preset-emoji { font-size: 1.15rem; line-height: 1; }
+  .preset-text .pname { font-size: 0.82rem; font-weight: 700; }
+  .preset-text .pdesc { font-size: 0.7rem; color: var(--muted); margin-top: 1px; }
+
+  /* ── Main 2-column ── */
+  main {
+    display: grid;
+    grid-template-columns: 1fr 370px;
+    gap: 20px;
+    padding: 20px 32px 48px;
+    max-width: 1340px;
+    margin: 0 auto;
+  }
+  @media(max-width:960px){ main { grid-template-columns: 1fr; } }
+
+  /* ── Card ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    transition: border-color .3s;
+  }
+  .card:hover { border-color: rgba(99,102,241,0.22); }
+  .card-heading {
+    font-size: 0.77rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-heading::before {
+    content: '';
+    width: 3px; height: 14px;
+    background: linear-gradient(180deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── Form section titles ── */
+  .fsec {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    padding-bottom: 8px;
+    margin: 22px 0 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .fsec:first-of-type { margin-top: 0; }
+
+  /* ── Grids ── */
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  @media(max-width:620px){ .g2,.g3 { grid-template-columns:1fr; } }
+
+  /* ── Label + input ── */
+  .field label {
+    display: block;
+    font-size: 0.77rem;
+    color: var(--muted2);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  input[type=number], select {
+    width: 100%;
+    background: var(--input);
+    border: 1px solid rgba(99,102,241,0.14);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 9px 12px;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    font-family: inherit;
+  }
+  input[type=number]:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+  }
+  select option { background: #1a1c2e; }
+
+  /* ── Toggle switch ── */
+  .trow { display: flex; align-items: center; gap: 10px; }
+  .toggle { position: relative; width: 44px; height: 25px; cursor: pointer; flex-shrink: 0; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .knob {
+    position: absolute; inset: 0;
+    background: rgba(99,102,241,0.12);
+    border: 1px solid rgba(99,102,241,0.18);
+    border-radius: 99px;
+    transition: .25s;
+  }
+  .knob::before {
+    content: '';
+    position: absolute;
+    width: 19px; height: 19px;
+    left: 2px; bottom: 2px;
+    background: var(--muted);
+    border-radius: 50%;
+    transition: .25s;
+  }
+  .toggle input:checked + .knob {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-color: var(--accent2);
+  }
+  .toggle input:checked + .knob::before {
+    transform: translateX(19px);
+    background: #fff;
+  }
+  .tlabel { font-size: 0.85rem; color: var(--text); font-weight: 500; }
+
+  /* ── Genre grid ── */
+  .genre-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .gbtn {
+    padding: 5px 11px;
+    font-size: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--input);
+    color: var(--muted2);
+    cursor: pointer;
+    transition: all .15s;
+    user-select: none;
+    font-family: inherit;
+    font-weight: 500;
+  }
+  .gbtn:hover { border-color: rgba(99,102,241,0.35); color: var(--text); }
+  .gbtn.on {
+    border-color: var(--accent2);
+    background: rgba(99,102,241,0.14);
+    color: #c4b5fd;
+    box-shadow: 0 0 0 1px rgba(99,102,241,0.18);
+  }
+
+  /* ── Range slider ── */
+  .rw { display: flex; align-items: center; gap: 10px; margin-top: 5px; }
+  input[type=range] {
+    flex: 1;
+    accent-color: var(--accent);
+    cursor: pointer;
+    height: 4px;
+  }
+  .rval {
+    min-width: 32px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--accent2);
+    background: rgba(99,102,241,0.1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 7px;
+  }
+  .rlabels {
+    display: flex;
+    justify-content: space-between;
+    font-size: .68rem;
+    color: var(--muted);
+    margin-top: 5px;
+    padding: 0 2px;
+  }
+
+  /* ── Predict button ── */
+  .btn-predict {
+    width: 100%;
+    margin-top: 24px;
+    padding: 14px;
+    background: linear-gradient(135deg, #5558d9, #7c3aed, #a855f7);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: .04em;
+    font-family: inherit;
+    transition: opacity .2s, transform .1s, box-shadow .25s;
+    box-shadow: 0 4px 22px rgba(99,102,241,0.32);
+  }
+  .btn-predict:hover {
+    opacity: .92;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 30px rgba(99,102,241,0.45);
+  }
+  .btn-predict:active { transform: scale(.98) translateY(0); }
+  .btn-predict:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+  /* ── Right panel ── */
+  #result-panel { position: sticky; top: 72px; display: flex; flex-direction: column; gap: 14px; }
+
+  /* empty state */
+  .empty-state {
+    text-align: center;
+    padding: 36px 20px;
+    color: var(--muted);
+  }
+  .empty-icon { font-size: 2.8rem; margin-bottom: 10px; }
+  .empty-state p { font-size: 0.83rem; line-height: 1.75; }
+  .empty-state strong { color: var(--muted2); }
+
+  /* result */
+  .res-cat {
+    text-align: center;
+    margin-bottom: 2px;
+  }
+  .cat-badge {
+    display: inline-block;
+    padding: 3px 13px;
+    border-radius: 99px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+  }
+  .res-num {
+    font-size: 3rem;
+    font-weight: 900;
+    text-align: center;
+    padding: 6px 0 0;
+    background: linear-gradient(135deg, var(--accent3), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+  .res-unit {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+  .range-box {
+    background: var(--input);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 15px;
+    margin-bottom: 10px;
+  }
+  .range-box-label {
+    font-size: 0.67rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    margin-bottom: 7px;
+  }
+  .range-bounds {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .rb { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+  .rsep { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--border2), transparent); }
+  .log-badge {
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--muted);
+    font-family: 'Consolas', 'Courier New', monospace;
+    background: rgba(0,0,0,0.35);
+    border-radius: 6px;
+    padding: 5px 8px;
+    border: 1px solid var(--border);
+  }
+
+  /* importance bars */
+  .imp-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 9px;
+  }
+  .imp-rank {
+    width: 17px;
+    font-size: 0.66rem;
+    color: var(--muted);
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .imp-name {
+    font-size: 0.74rem;
+    color: var(--muted2);
+    width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+  }
+  .imp-bar-bg {
+    flex: 1;
+    background: rgba(99,102,241,0.08);
+    border-radius: 4px;
+    height: 5px;
+    overflow: hidden;
+  }
+  .imp-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    width: 0%;
+    transition: width .65s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .imp-pct {
+    font-size: 0.7rem;
+    color: var(--muted);
+    width: 36px;
+    text-align: right;
+    flex-shrink: 0;
+    font-family: 'Consolas', monospace;
+  }
+
+  /* error / msg */
+  .errmsg {
+    color: var(--red);
+    font-size: 0.81rem;
+    background: rgba(244,63,94,0.07);
+    border: 1px solid rgba(244,63,94,0.2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    line-height: 1.6;
+  }
+  .errmsg code {
+    font-family: 'Consolas', monospace;
+    font-size: 0.78rem;
+    opacity: .85;
+  }
+
+  .hint {
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 400;
+  }
+  details.adv-details {
+    background: rgba(99,102,241,0.04);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px 14px;
+  }
+  details.adv-details summary.fsec {
+    margin-bottom: 0;
+  }
+  .preset-hint {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin: -2px 0 10px;
+    line-height: 1.45;
+  }
+  .preset-hint code {
+    font-size: 0.68rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <div class="header-left">
+    <h1>Türkiye Box-Office <span class="hl">Seyirci Tahmin</span></h1>
+    <div class="subtitle">GradientBoosting (V5) &nbsp;·&nbsp; <code>ml_ready_dataset</code> &nbsp;·&nbsp; ≤2022 eğitim / ≥2023 test</div>
+  </div>
+  <div id="status-badge" class="badge off">
+    <span class="dot"></span>
+    <span id="status-text">Sunucuya bağlanıyor…</span>
+  </div>
+</header>
+
+<!-- ── Metrics bar ── -->
+<div class="metrics-bar">
+  <div class="metric"><span class="mi">📈</span> Test R² (temporal) <strong id="m-r2">0.4125</strong></div>
+  <div class="metric"><span class="mi">🎯</span> Test MedAPE <strong id="m-medape">70.42%</strong></div>
+  <div class="metric"><span class="mi">🎬</span> Eğitim <strong id="m-train">1376 film</strong></div>
+  <div class="metric"><span class="mi">⚙️</span> Özellik <strong id="m-feats">45</strong></div>
+</div>
+
+<!-- ── Test seti kısayolları ── -->
+<div class="presets-section">
+  <div class="section-eyebrow">Test setinden gerçek filmler (Liste_Yili ≥ 2023)</div>
+  <p class="preset-hint">
+    Özellikler <code>ml_ready_dataset</code> test bölmesinden yüklenir. Açıklamadaki sayı <strong>gerçekleşen gişe</strong>dir; tahminden sonra sonuç kutusunda kıyas gösterilir.
+  </p>
+  <div class="presets-row" id="presets-test-row"></div>
+</div>
+
+<!-- ── Main ── -->
+<main>
+
+  <!-- LEFT: Form -->
+  <div class="card">
+    <div class="card-heading">Film Özellikleri</div>
+
+    <!-- Film bilgileri -->
+    <div class="fsec">🎞️ Film Bilgileri</div>
+    <div class="g2">
+      <div class="field">
+        <label>Yerli film <span class="hint">(<code>Is_Yerli</code>)</span></label>
+        <div class="trow">
+          <label class="toggle"><input type="checkbox" id="is_domestic"><span class="knob"></span></label>
+          <span class="tlabel" id="is_domestic_lbl">Yabancı</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Süre (dk) <span class="hint"><code>Sure_Dakika</code></span></label>
+        <input type="number" id="runtime_minutes" value="106" min="1" max="320"/>
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <div class="field">
+        <label>Türler <span class="hint">(<code>Tur_*</code> çoklu)</span></label>
+        <div class="genre-grid" id="genre-grid"></div>
+      </div>
+    </div>
+
+    <div class="g2" style="margin-top:16px">
+      <div class="field">
+        <label>IMDb puanı <span class="hint"><code>IMDb_Puani</code></span></label>
+        <input type="number" id="imdb_puani" value="6.8" min="1" max="10" step="0.1"/>
+      </div>
+      <div class="field">
+        <label>IMDb bilgisi yok <span class="hint"><code>IMDb_Yok</code></span></label>
+        <div class="trow">
+          <label class="toggle"><input type="checkbox" id="imdb_yok"><span class="knob"></span></label>
+          <span class="tlabel" id="imdb_yok_lbl">Hayır</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="fsec">📅 Vizyon &amp; bağlam</div>
+    <p style="font-size:0.72rem;color:var(--muted);margin:-4px 0 10px;line-height:1.45">
+      <strong>Liste_Yili</strong> ve pazar alanları (<code>Sektor_Toplam_Seyirci</code>, <code>Ort_Bilet_TL</code>) seçilen yıla göre sunucuda otomatik doldurulur.
+      Mevsim bayrakları vizyon ayından türetilir. Pandemi bayrağı: vizyon yılı 2020–2021 → <code>Is_Pandemi=1</code>.
+    </p>
+    <div class="g3">
+      <div class="field">
+        <label>Liste / vizyon yılı</label>
+        <input type="number" id="release_year" value="2025" min="2016" max="2030"/>
+      </div>
+      <div class="field">
+        <label>Vizyon ayı (1–12)</label>
+        <input type="number" id="release_month" value="7" min="1" max="12"/>
+      </div>
+      <div class="field">
+        <label>Rekabet <span class="hint"><code>Rekabet_Indeksi</code></span></label>
+        <input type="number" id="competition_index" value="8" min="0" max="50"/>
+      </div>
+    </div>
+
+    <div class="fsec">🔗 Devam filmi</div>
+    <div class="field">
+      <label>Devam filmi <span class="hint"><code>Is_Devam_Filmi</code></span></label>
+      <div class="trow">
+        <label class="toggle"><input type="checkbox" id="is_sequel"><span class="knob"></span></label>
+        <span class="tlabel" id="is_sequel_lbl">Hayır</span>
+      </div>
+    </div>
+
+    <details class="adv-details" style="margin-top:18px">
+      <summary class="fsec" style="cursor:pointer;user-select:none">⚙️ Gelişmiş — sıralı skorlar <span class="hint">(boş bırakılırsa eğitim medyanı)</span></summary>
+      <div class="g2" style="margin-top:12px">
+        <div class="field">
+          <label><code>Yonetmen_Skor</code> (log-ölçek)</label>
+          <input type="number" id="yonetmen_skor" value="" step="0.01" placeholder="örn. 12.4"/>
+        </div>
+        <div class="field">
+          <label><code>Yonetmen_Film_Sayisi</code></label>
+          <input type="number" id="yonetmen_film_sayisi" value="" step="1" placeholder="örn. 5"/>
+        </div>
+      </div>
+      <div class="g3" style="margin-top:10px">
+        <div class="field">
+          <label><code>Oyuncu1_Skor</code></label>
+          <input type="number" id="oyuncu1_skor" value="" step="0.01"/>
+        </div>
+        <div class="field">
+          <label><code>Oyuncu2_Skor</code></label>
+          <input type="number" id="oyuncu2_skor" value="" step="0.01"/>
+        </div>
+        <div class="field">
+          <label><code>Oyuncu3_Skor</code></label>
+          <input type="number" id="oyuncu3_skor" value="" step="0.01"/>
+        </div>
+      </div>
+      <div class="g2" style="margin-top:10px">
+        <div class="field">
+          <label><code>Kadro_Veri_Var</code> (0/1)</label>
+          <input type="number" id="kadro_veri_var" value="" min="0" max="1" step="1" placeholder="1"/>
+        </div>
+        <div class="field">
+          <label><code>Dagitimci_Skor</code></label>
+          <input type="number" id="dagitimci_skor" value="" step="0.01" placeholder="log geçmiş ort."/>
+        </div>
+      </div>
+    </details>
+
+    <button class="btn-predict" id="predict-btn" onclick="runPredict()">🎬&nbsp; Tahmin Et</button>
+    <div id="form-msg"></div>
+  </div>
+
+  <!-- RIGHT: Result + Importance -->
+  <div id="result-panel">
+    <div class="card" id="result-card">
+      <div class="card-heading">Tahmin Sonucu</div>
+      <div id="result-body">
+        <div class="empty-state">
+          <div class="empty-icon">🎬</div>
+          <p>Film özelliklerini doldurun ve<br><strong>Tahmin Et</strong> butonuna tıklayın.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="imp-card">
+      <div class="card-heading">En Önemli 10 Özellik</div>
+      <div id="imp-body">
+        <div class="empty-state" style="padding:18px 16px">
+          <p style="font-size:.8rem">Tahmin yapıldıktan sonra<br>önem grafiği burada görünür.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+const API = 'http://localhost:5000';
+
+/** Sunucu kapalıysa veya eski process çalışıyorsa gösterilecek V5 referansı */
+const METRICS_FALLBACK = { metric1_value: '0.4125', metric2_value: '70.42%' };
+
+/* ml_ready Tur_* ile uyumlu (Konser / Western / espor yok) */
+let GENRES = [
+  '3 Boyutlu','Aile','Aksiyon','Animasyon','Belgesel','Bilim-Kurgu','Biyografi',
+  'Dram','Fantastik','Gençlik','Gerilim','Gizem','IMAX','Komedi','Korku',
+  'Macera','Müzik','Müzikal','Romantik','Romantik-Komedi','Savaş','Spor','Suç','Tarihi'
+];
+
+function buildGenreGrid() {
+  const gg = document.getElementById('genre-grid');
+  gg.innerHTML = '';
+  GENRES.forEach(g => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'gbtn';
+    b.textContent = g;
+    b.dataset.genre = g;
+    b.addEventListener('click', () => {
+      b.classList.toggle('on');
+      if (!document.querySelector('.gbtn.on')) b.classList.add('on');
+    });
+    gg.appendChild(b);
+  });
+  const dram = gg.querySelector('[data-genre="Dram"]');
+  if (dram) dram.classList.add('on');
+}
+buildGenreGrid();
+
+/* ── Build preset cards ──────────────────────────────────────── */
+let lastActualAudienceFromPreset = null;
+
+function applyFeatureBundle(f, activeBtn, opts = {}) {
+  const fillAdvanced = opts.fillAdvanced === true;
+  const actualAudience = opts.actualAudience;
+
+  document.querySelectorAll('.preset-card').forEach(b => b.classList.remove('active'));
+  if (activeBtn) activeBtn.classList.add('active');
+
+  if (actualAudience != null && actualAudience !== '' && Number.isFinite(Number(actualAudience)))
+    lastActualAudienceFromPreset = Number(actualAudience);
+  else
+    lastActualAudienceFromPreset = null;
+
+  setTgl('is_domestic', f.is_domestic);
+  setTgl('is_sequel', f.is_sequel);
+  setTgl('imdb_yok', f.imdb_yok != null ? f.imdb_yok : 0);
+
+  setNum('runtime_minutes', f.runtime_minutes);
+  setNum('release_year', f.release_year);
+  setNum('release_month', f.release_month);
+  setNum('competition_index', f.competition_index);
+  document.getElementById('imdb_puani').value = f.imdb_puani != null ? f.imdb_puani : '';
+
+  const advIds = ['yonetmen_skor','yonetmen_film_sayisi','oyuncu1_skor','oyuncu2_skor','oyuncu3_skor','kadro_veri_var','dagitimci_skor'];
+  advIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (fillAdvanced && f[id] != null && f[id] !== '')
+      el.value = f[id];
+    else
+      el.value = '';
+  });
+
+  document.querySelectorAll('.gbtn').forEach(b => {
+    b.classList.toggle('on', (f.genres || []).includes(b.dataset.genre));
+  });
+}
+
+async function loadTestPresets() {
+  const row = document.getElementById('presets-test-row');
+  if (!row) return;
+  try {
+    const r = await fetch(API + '/test_set_presets');
+    const raw = await r.json();
+    if (raw && raw.error) throw new Error(raw.error);
+    const list = Array.isArray(raw) ? raw : [];
+    row.innerHTML = '';
+    if (!list.length) {
+      row.innerHTML = '<span class="preset-hint">test_set_presets.json yok veya boş. Proje kökünde: <code>python scripts/export_demo_test_presets.py</code></span>';
+      return;
+    }
+    list.forEach(p => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'preset-card';
+      btn.addEventListener('click', () => applyFeatureBundle(p.f, btn, {
+        fillAdvanced: true,
+        actualAudience: p.actual_toplam_seyirci,
+      }));
+      const em = document.createElement('span');
+      em.className = 'preset-emoji';
+      em.textContent = p.emoji || '📽️';
+      const wrap = document.createElement('div');
+      wrap.className = 'preset-text';
+      const pn = document.createElement('div');
+      pn.className = 'pname';
+      pn.textContent = String(p.name || 'Film').slice(0, 60);
+      const pd = document.createElement('div');
+      pd.className = 'pdesc';
+      pd.textContent = String(p.desc || '');
+      wrap.appendChild(pn);
+      wrap.appendChild(pd);
+      btn.appendChild(em);
+      btn.appendChild(wrap);
+      row.appendChild(btn);
+    });
+  } catch (e) {
+    row.innerHTML = '<span class="preset-hint">Test seti yüklenemedi. Sunucuyu başlatın veya <code>/test_set_presets</code> yolunu kontrol edin. ' + (e.message || '') + '</span>';
+  }
+}
+
+function setTgl(id, val) {
+  const el = document.getElementById(id);
+  el.checked = !!val;
+  el.dispatchEvent(new Event('change'));
+}
+function setNum(id, val) {
+  document.getElementById(id).value = val;
+}
+
+/* ── Toggle labels ───────────────────────────────────────────── */
+const TGL = {
+  is_domestic: ['Yabancı','Yerli'],
+  is_sequel:   ['Hayır','Evet'],
+  imdb_yok:    ['Hayır','Evet'],
+};
+Object.keys(TGL).forEach(id => {
+  document.getElementById(id).addEventListener('change', function() {
+    document.getElementById(id + '_lbl').textContent = TGL[id][this.checked ? 1 : 0];
+  });
+});
+
+/* ── Health check ────────────────────────────────────────────── */
+async function checkHealth() {
+  try {
+    const r = await fetch(API + '/health', { signal: AbortSignal.timeout(3000) });
+    const d = await r.json();
+    const badge = document.getElementById('status-badge');
+    const txt   = document.getElementById('status-text');
+    if (d.model_loaded) {
+      badge.classList.remove('off');
+      txt.textContent = 'Model hazır · ' + d.features + ' özellik';
+    } else {
+      badge.classList.add('off');
+      txt.textContent = 'Sunucu çalışıyor — model yüklenemedi';
+    }
+  } catch {
+    document.getElementById('status-badge').classList.add('off');
+    document.getElementById('status-text').textContent = 'Sunucuya bağlanılamıyor';
+  }
+}
+
+/* ── Load config ─────────────────────────────────────────────── */
+async function loadConfig() {
+  try {
+    const r = await fetch(API + '/config');
+    const d = await r.json();
+    const m1 = d.model_info && d.model_info.metric1_value;
+    const m2 = d.model_info && d.model_info.metric2_value;
+    // Eski V4 sunucusu (ör. 0.3037) yanlışlıkla çalışıyorsa barı güncelleme
+    const stale = m1 === '0.3037' || (m2 && String(m2).startsWith('59.'));
+    if (stale) {
+      document.getElementById('m-r2').textContent     = METRICS_FALLBACK.metric1_value;
+      document.getElementById('m-medape').textContent = METRICS_FALLBACK.metric2_value;
+    } else {
+      document.getElementById('m-r2').textContent     = m1 || METRICS_FALLBACK.metric1_value;
+      document.getElementById('m-medape').textContent = m2 || METRICS_FALLBACK.metric2_value;
+    }
+    document.getElementById('m-feats').textContent  = String(d.feature_count || '45');
+    if (d.train_films)
+      document.getElementById('m-train').textContent = d.train_films + ' film';
+    if (d.genres && Array.isArray(d.genres) && d.genres.length) {
+      GENRES = d.genres;
+      buildGenreGrid();
+    }
+  } catch {
+    document.getElementById('m-r2').textContent     = METRICS_FALLBACK.metric1_value;
+    document.getElementById('m-medape').textContent = METRICS_FALLBACK.metric2_value;
+  }
+}
+
+/* ── Collect form values ─────────────────────────────────────── */
+function optNumber(id) {
+  const el = document.getElementById(id);
+  if (!el) return null;
+  const v = el.value;
+  if (v === '' || v == null) return null;
+  const n = parseFloat(v);
+  return Number.isFinite(n) ? n : null;
+}
+
+function collectFeatures() {
+  const year  = parseInt(document.getElementById('release_year').value)  || 2025;
+  const month = parseInt(document.getElementById('release_month').value) || 7;
+  const out = {
+    genres: [...document.querySelectorAll('.gbtn.on')].map(b => b.dataset.genre),
+    is_domestic: document.getElementById('is_domestic').checked ? 1 : 0,
+    runtime_minutes: parseFloat(document.getElementById('runtime_minutes').value) || 106,
+    imdb_puani: parseFloat(document.getElementById('imdb_puani').value) || 0,
+    imdb_yok: document.getElementById('imdb_yok').checked ? 1 : 0,
+    release_year: year,
+    release_month: month,
+    competition_index: parseInt(document.getElementById('competition_index').value) || 0,
+    is_sequel: document.getElementById('is_sequel').checked ? 1 : 0,
+  };
+  const adv = {
+    yonetmen_skor: optNumber('yonetmen_skor'),
+    yonetmen_film_sayisi: optNumber('yonetmen_film_sayisi'),
+    oyuncu1_skor: optNumber('oyuncu1_skor'),
+    oyuncu2_skor: optNumber('oyuncu2_skor'),
+    oyuncu3_skor: optNumber('oyuncu3_skor'),
+    kadro_veri_var: optNumber('kadro_veri_var'),
+    dagitimci_skor: optNumber('dagitimci_skor'),
+  };
+  Object.keys(adv).forEach(k => { if (adv[k] != null) out[k] = adv[k]; });
+  return out;
+}
+
+/* ── Format numbers ──────────────────────────────────────────── */
+function fmt(n) {
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(2) + ' M';
+  if (n >= 1_000)     return (n / 1_000).toFixed(1) + ' K';
+  return n.toLocaleString('tr-TR');
+}
+
+/* ── Tahmin büyüklüğü (kalite değil) — eşikler sadece raporlama dilimi ── */
+function getCategory(n) {
+  if (n >= 2_000_000) return { label:'Ölçek: ≥ 2M',   color:'#10b981', bg:'rgba(16,185,129,0.12)' };
+  if (n >= 500_000)   return { label:'Ölçek: 500K–2M', color:'#6366f1', bg:'rgba(99,102,241,0.14)' };
+  if (n >= 100_000)   return { label:'Ölçek: 100K–500K', color:'#a78bfa', bg:'rgba(167,139,250,0.13)' };
+  if (n >= 30_000)    return { label:'Ölçek: 30–100K', color:'#f59e0b', bg:'rgba(245,158,11,0.12)' };
+  return              { label:'Ölçek: &lt; 30K', color:'#f43f5e', bg:'rgba(244,63,94,0.11)' };
+}
+
+/* ── Prediction ──────────────────────────────────────────────── */
+async function runPredict() {
+  const btn = document.getElementById('predict-btn');
+  const msg = document.getElementById('form-msg');
+  btn.disabled = true;
+  btn.textContent = '⏳  Hesaplanıyor…';
+  msg.innerHTML = '';
+
+  try {
+    const r = await fetch(API + '/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ features: collectFeatures() }),
+    });
+    const d = await r.json();
+
+    if (d.error) {
+      msg.innerHTML = `<div class="errmsg">⚠ ${d.error}</div>`;
+      return;
+    }
+
+    const cat = getCategory(d.prediction);
+    let cmpHtml = '';
+    if (lastActualAudienceFromPreset != null && Number.isFinite(lastActualAudienceFromPreset)) {
+      const absPct = lastActualAudienceFromPreset > 0
+        ? (100 * Math.abs(d.prediction - lastActualAudienceFromPreset) / lastActualAudienceFromPreset).toFixed(1)
+        : '—';
+      cmpHtml = `<div class="log-badge" style="margin-top:10px">Test satırı — gerçekleşen gişe: <strong>${fmt(lastActualAudienceFromPreset)}</strong> · Yaklaşık mutlak % hata: <strong>${absPct}%</strong></div>`;
+    }
+    document.getElementById('result-body').innerHTML = `
+      <div class="res-cat">
+        <span class="cat-badge" title="Doğruluk veya gerçek gişeyle uyum değil; yalnızca tahmin edilen kişi sayısının hangi büyüklük diliminde olduğu." style="color:${cat.color};background:${cat.bg};border:1px solid ${cat.color}40">${cat.label}</span>
+      </div>
+      <div class="res-num">${fmt(d.prediction)}</div>
+      <div class="res-unit">tahmini seyirci</div>
+      <div class="range-box">
+        <div class="range-box-label">Aralık (±0.5 log1p birim — kabaca band)</div>
+        <div class="range-bounds">
+          <span class="rb">${fmt(d.prediction_low)}</span>
+          <div class="rsep"></div>
+          <span class="rb">${fmt(d.prediction_high)}</span>
+        </div>
+      </div>
+      <div class="log-badge">log1p(seyirci) = ${d.prediction_log.toFixed(4)}</div>
+      ${cmpHtml}
+    `;
+
+    if (d.top_features && d.top_features.length) {
+      const maxImp = d.top_features[0].importance;
+      document.getElementById('imp-body').innerHTML = d.top_features.map((f, i) => `
+        <div class="imp-row">
+          <div class="imp-rank">${i + 1}</div>
+          <div class="imp-name" title="${f.name}">${f.name}</div>
+          <div class="imp-bar-bg"><div class="imp-bar-fill" style="width:${(f.importance/maxImp*100).toFixed(0)}%"></div></div>
+          <div class="imp-pct">${(f.importance*100).toFixed(1)}%</div>
+        </div>`).join('');
+    }
+
+  } catch {
+    msg.innerHTML = `<div class="errmsg">
+      ⚠ Sunucuya bağlanılamadı.<br>
+      demo_server.py çalışıyor mu?<br>
+      <code>python demo_server.py</code>
+    </div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🎬\u00a0 Tahmin Et';
+  }
+}
+
+/* ── Init ────────────────────────────────────────────────────── */
+async function initDemo() {
+  checkHealth();
+  await loadConfig();
+  await loadTestPresets();
+}
+initDemo();
+setInterval(checkHealth, 8000);
+</script>
+</body>
+</html>

@@ -12,6 +12,7 @@ seaborn
 
 # Makine Öğrenmesi (Regression)
 scikit-learn
+lightgbm
 
 # Jupyter Notebook desteği
 ipykernel
